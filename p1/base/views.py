@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Room
+from .models import Room, Topic
 
 from .formModels import RoomForm 
 
@@ -12,8 +12,12 @@ from .formModels import RoomForm
 
 # Create your views here.
 def home(request):
-    rooms=Room.objects.all()
-    context={'rooms':rooms}
+    query = request.GET.get('query')
+    rooms=Room.objects.filter()
+    if query:
+        rooms=Room.objects.filter(topic__name__icontains=query)
+    topics=Topic.objects.all()
+    context={'rooms':rooms, 'topics':topics}
     return render(request, 'base/home.html', context)
 
 # Getting pk from the url call, sending curRoom as context to the html file room.html
