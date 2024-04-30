@@ -59,6 +59,7 @@ def home(request):
         rooms=Room.objects.filter(
             Q(topic__name__icontains=query) |
             Q(name__icontains=query) |
+            Q(host__username__icontains=query) |
             Q(description__icontains=query))
         
     topics=Topic.objects.all()
