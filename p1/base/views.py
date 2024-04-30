@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from django.db.models import Q
 from .models import Room, Topic
 
 from .formModels import RoomForm 
@@ -15,9 +15,13 @@ def home(request):
     query = request.GET.get('query')
     rooms=Room.objects.filter()
     if query:
-        rooms=Room.objects.filter(topic__name__icontains=query)
+        rooms=Room.objects.filter(
+            Q(topic__name__icontains=query) |
+            Q(name__icontains=query) |
+            Q(description__icontains=query))
+        
     topics=Topic.objects.all()
-    context={'rooms':rooms, 'topics':topics}
+    context={'rooms':rooms, 'rooms_count':rooms.count(), 'topics':topics}
     return render(request, 'base/home.html', context)
 
 # Getting pk from the url call, sending curRoom as context to the html file room.html
