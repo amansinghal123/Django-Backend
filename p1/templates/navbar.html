@@ -9,3 +9,9 @@
 <form action="{% url 'home_name' %}" method="GET">
   <input type="text" name="query" placeholder="Search Rooms... "/>
 </form>
+
+{% if request.user.is_authenticated %}
+<a href="{% url 'logout_name' %}">Logout</a>
+{% else %}
+<a href="{% url 'login_name' %}">Login</a>
+{% endif %}

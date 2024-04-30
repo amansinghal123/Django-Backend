@@ -1,14 +1,47 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .models import Room, Topic
 
 from .formModels import RoomForm 
+import time
 
 # rooms = [
 #     {'id':1, 'name':'Fortnite'},
 #     {'id':2, 'name':'PUBG'},
 #     {'id':3, 'name':'DB Legends'},
 # ]
+
+def logoutUser(request):
+    # time.sleep(1)
+    logout(request)
+    # time.sleep(1)
+    return redirect('home_name')
+ 
+def loginPage(request):
+
+    context={}
+
+    if request.method=='POST':
+        email = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            curUser=User.objects.get(username=email)
+        except:
+            messages.error(request, "User doesn't exist")
+
+        curUser = authenticate(request, username=email, password=password)
+
+        if curUser is not None:
+            login(request, curUser)
+            return redirect('home_name')
+        else:
+            messages.error(request, "Username or Password doesn't exist")
+
+    return render(request, 'base/login_register.html', context)
 
 # Create your views here.
 def home(request):
