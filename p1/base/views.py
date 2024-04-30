@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
+
+from django.http import HttpResponse
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from django.db.models import Q
 from .models import Room, Topic
 
@@ -24,6 +29,9 @@ def loginPage(request):
 
     context={}
 
+    if request.user.is_authenticated:
+        return redirect('home_name')
+    
     if request.method=='POST':
         email = request.POST.get('username')
         password = request.POST.get('password')
@@ -40,7 +48,7 @@ def loginPage(request):
             return redirect('home_name')
         else:
             messages.error(request, "Username or Password doesn't exist")
-
+        
     return render(request, 'base/login_register.html', context)
 
 # Create your views here.
@@ -63,6 +71,7 @@ def room(request, pk):
     context={'room':curRoom}
     return render(request, 'base/room.html', context)
 
+@login_required(login_url='login_name')
 def createRoom(request):
     curForm=RoomForm()
     if request.method=='POST':
@@ -74,11 +83,14 @@ def createRoom(request):
     context={'form':curForm}
     return render(request, 'base/room_form.html', context)
 
-
+@login_required(login_url='login_name')
 def updateRoom(request, pk):
     roomToUpdate=Room.objects.get(id=pk)
     curForm=RoomForm(instance=roomToUpdate)
 
+    if request.user != roomToUpdate.host:
+        return HttpResponse("Bhaago yahan se")
+    
     if request.method=='POST':
         curForm=RoomForm(request.POST, instance=roomToUpdate)
         if curForm.is_valid():
@@ -89,9 +101,13 @@ def updateRoom(request, pk):
     context={'form':curForm}
     return render(request, 'base/room_form.html', context)
 
-
+@login_required(login_url='login_name')
 def deleteRoom(request, pk):
     roomToDelete=Room.objects.get(id=pk)
+
+    if request.user != roomToDelete.host:
+        return HttpResponse("Acha Ji, Delete Karoge?")
+    
     if request.method=='POST': 
         roomToDelete.delete()
         return redirect('home_name')
