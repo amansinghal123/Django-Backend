@@ -4,6 +4,36 @@
 
 <h1>{{room.name}}</h1>
 
-<p1>{{room.description}}</p1>
+<p>{{room.description}}</p>
+
+<hr>
+
+<div class="Messages-Wrapper">
+    <h3>Conversations</h3>
+    <hr>
+    {% for message in userMessages %}
+        <div>
+            <small>@{{message.user}} - {{message.created|timesince}} ago</small>
+            <p>{{message.body}}</p>
+            <br>
+            <hr>
+        </div>
+    {% endfor %}
+</div>
+
+{% if request.user.is_authenticated %}
+    <div class="Comments-Form">
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <input type="text" name="body" placeholder="Write Your Message Here"/>
+<!-- 
+            <label for="">Message you want to Post:</label>
+            {{ form.as_p }}
+            <input type="submit" value="Post"> -->
+
+        </form>
+    </div>
+{% endif %}
 
 {% endblock content %}

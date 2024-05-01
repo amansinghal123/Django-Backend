@@ -8,10 +8,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
-from .models import Room, Topic
+from .models import Room, Topic, Message
 
-from .formModels import RoomForm 
+from .formModels import RoomForm
 import time
+
 
 # rooms = [
 #     {'id':1, 'name':'Fortnite'},
@@ -72,14 +73,6 @@ def registerPage(request):
         else:
             messages.error(request, "An Error during Registration")
 
-        #curUser = authenticate(request, username=curUser, password=password)
-
-        # if curUser is not None:
-        #     login(request, curUser)
-        #     return redirect('home_name')
-        # else:
-        #     messages.error(request, "Username or Password doesn't exist")
-
     return render(request, 'base/login_register.html', context)
 
 # Create your views here.
@@ -100,7 +93,18 @@ def home(request):
 # Getting pk from the url call, sending curRoom as context to the html file room.html
 def room(request, pk):
     curRoom=Room.objects.get(id=pk)
-    context={'room':curRoom}
+    curRoom_messages=Message.objects.filter(room__id=pk).order_by('-created')
+    
+    context={'room':curRoom, 'userMessages':curRoom_messages}
+    if request.method=='POST':
+        curMessage=Message.objects.create(
+            user=request.user,
+            room=curRoom,
+            body=request.POST.get('body')
+            )
+        return redirect('room_name', pk=pk) 
+    
+    
     return render(request, 'base/room.html', context)
 
 @login_required(login_url='login_name')
