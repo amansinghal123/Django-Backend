@@ -2,38 +2,62 @@
 
 {% block content %}
 
-<h1>{{room.name}}</h1>
+<style>
+    .room-container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
 
-<p>{{room.description}}</p>
+<div class="room-container">
 
-<hr>
+    <div>
+        <h1>{{room.name}}</h1>
 
-<div class="Messages-Wrapper">
-    <h3>Conversations</h3>
-    <hr>
-    {% for message in userMessages %}
-        <div>
-            <small>@{{message.user}} - {{message.created|timesince}} ago</small>
-            <p>{{message.body}}</p>
-            <br>
+        <p>{{room.description}}</p>
+
+        <div class="Messages-Wrapper">
+            <h3>Conversations</h3>
             <hr>
+            {% for message in userMessages %}
+                <div>
+                    <small>@{{message.user}} - {{message.created|timesince}} ago</small>
+                    <p>{{message.body}}</p>
+                    {% if request.user == message.user %}
+                        <a href="{% url 'delete-message_name' message.id %}">Delete</a>   
+                        <a href="{% url 'edit-message_name' message.id %}">Edit</a>
+                    {% endif %}
+                    <br>
+                    <hr>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
 
-{% if request.user.is_authenticated %}
-    <div class="Comments-Form">
-        <form method="POST" action="">
-            {% csrf_token %}
+        {% if request.user.is_authenticated %}
+            <div class="Comments-Form">
+                <form method="POST" action="">
+                    {% csrf_token %}
 
-            <input type="text" name="body" placeholder="Write Your Message Here"/>
-<!-- 
-            <label for="">Message you want to Post:</label>
-            {{ form.as_p }}
-            <input type="submit" value="Post"> -->
+                    <input type="text" name="body" placeholder="Write Your Message Here"/>
+        <!-- 
+                    <label for="">Message you want to Post:</label>
+                    {{ form.as_p }}
+                    <input type="submit" value="Post"> -->
 
-        </form>
+                </form>
+            </div>
+        {% endif %}
     </div>
-{% endif %}
+
+    <div>
+        <h3>Participants</h3>
+        <hr>
+        {% for participant in participants %}
+            <small>@{{participant.username}}</small>
+            <br>
+        {% endfor %}        
+        
+    </div>
+</div>
 
 {% endblock content %}

@@ -94,14 +94,15 @@ def home(request):
 def room(request, pk):
     curRoom=Room.objects.get(id=pk)
     curRoom_messages=Message.objects.filter(room__id=pk).order_by('-created')
-    
-    context={'room':curRoom, 'userMessages':curRoom_messages}
+    participants = curRoom.participants.all()
+    context={'room':curRoom, 'userMessages':curRoom_messages, 'participants':participants}
     if request.method=='POST':
         curMessage=Message.objects.create(
             user=request.user,
             room=curRoom,
             body=request.POST.get('body')
             )
+        curRoom.participants.add(request.user)
         return redirect('room_name', pk=pk) 
     
     
@@ -147,7 +148,24 @@ def deleteRoom(request, pk):
     if request.method=='POST': 
         roomToDelete.delete()
         return redirect('home_name')
-    context={'room':roomToDelete}
+    context={'obj':roomToDelete}
     return render(request, 'base/delete.html', context)
     #return redirect('delete-room_name')
 
+@login_required(login_url='login_name')
+def deleteMessage(request, pk):
+    messageToDelete=Message.objects.get(id=pk)
+    curRoom_id=messageToDelete.room.id
+    if request.user != messageToDelete.user:
+        return HttpResponse("Acha Ji, Delete Karoge?")
+    
+    if request.method=='POST': 
+        messageToDelete.delete()
+        return redirect('room_name', pk=curRoom_id) 
+    
+    context={'obj':messageToDelete}
+    return render(request, 'base/delete.html', context)
+
+@login_required(login_url='login_name')
+def editMessage(request, pk1, pk2):
+    pass
