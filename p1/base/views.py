@@ -166,6 +166,20 @@ def deleteMessage(request, pk):
     context={'obj':messageToDelete}
     return render(request, 'base/delete.html', context)
 
+
 @login_required(login_url='login_name')
-def editMessage(request, pk1, pk2):
-    pass
+def editMessage(request, pk):
+    messageToEdit=Message.objects.get(id=pk)
+    curRoom_id=messageToEdit.room.id
+
+    if request.user != messageToEdit.user:
+        return HttpResponse("Acha Ji, Edit Karoge?")
+    
+    if request.method=='POST': 
+        edited_message = request.POST.get('editedMessage')
+        messageToEdit.body=edited_message
+        messageToEdit.save()
+        return redirect('room_name', pk=curRoom_id) 
+    
+    context={'message':messageToEdit}
+    return render(request, 'base/editMessage.html', context)

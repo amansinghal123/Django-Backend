@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div>
+
+    <!-- Post means send data to URL, blank action means send data to current URL -->
+    <form method="POST" action="">
+        <!-- For Security -->
+        {% csrf_token %}
+        <input type="text" name="editedMessage" value="{{message}}" />
+        <br>
+        <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
+
+    </form>
+</div>
+
+
+{% endblock content %}
