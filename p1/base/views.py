@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from .models import Room, Topic
 
@@ -27,21 +27,22 @@ def logoutUser(request):
  
 def loginPage(request):
 
-    context={}
+    pageType = 'login'
+    context={'page': pageType}
 
     if request.user.is_authenticated:
         return redirect('home_name')
     
     if request.method=='POST':
-        email = request.POST.get('username')
+        curUser = request.POST.get('username').lower()
         password = request.POST.get('password')
 
         try:
-            curUser=User.objects.get(username=email)
+            curUser=User.objects.get(username=curUser)
         except:
             messages.error(request, "User doesn't exist")
 
-        curUser = authenticate(request, username=email, password=password)
+        curUser = authenticate(request, username=curUser, password=password)
 
         if curUser is not None:
             login(request, curUser)
@@ -49,6 +50,36 @@ def loginPage(request):
         else:
             messages.error(request, "Username or Password doesn't exist")
         
+    return render(request, 'base/login_register.html', context)
+
+
+def registerPage(request):
+    
+    form=UserCreationForm()
+    pageType='register'
+
+    context={'page': pageType, 'form': form}  
+
+    if request.method=='POST':
+        form=UserCreationForm(request.POST)
+
+        if form.is_valid():
+            curUser = form.save(commit=False)
+            curUser.username = curUser.username.lower()
+            curUser.save()
+            login(request, curUser)
+            return redirect('home_name')
+        else:
+            messages.error(request, "An Error during Registration")
+
+        #curUser = authenticate(request, username=curUser, password=password)
+
+        # if curUser is not None:
+        #     login(request, curUser)
+        #     return redirect('home_name')
+        # else:
+        #     messages.error(request, "Username or Password doesn't exist")
+
     return render(request, 'base/login_register.html', context)
 
 # Create your views here.
@@ -115,3 +146,4 @@ def deleteRoom(request, pk):
     context={'room':roomToDelete}
     return render(request, 'base/delete.html', context)
     #return redirect('delete-room_name')
+
