@@ -123,7 +123,9 @@ def createRoom(request):
     if request.method=='POST':
         curForm=RoomForm(request.POST)
         if curForm.is_valid():
-            curForm.save()
+            room = curForm.save(commit=False)
+            room.host=request.user
+            room.save()
             return redirect('home_name')
     
     context={'form':curForm}

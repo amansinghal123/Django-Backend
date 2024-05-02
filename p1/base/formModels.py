@@ -7,3 +7,4 @@ class RoomForm(ModelForm):
 
         # This will create metaData fiels from the parent class Rooms. 
         fields = '__all__'
+        exclude = ['host', 'participants'] 

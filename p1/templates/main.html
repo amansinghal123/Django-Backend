@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Django Project</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
 </head>
 <body>
     {% include 'navbar.html' %}
@@ -16,6 +19,9 @@
         {% endfor %}
     </ul>
     {% endif %}
+
+    <!-- Example usage in your template -->
+    <!-- <img src="{% static 'images/Lets Come together.png' %}" alt="Image"> -->
 
     {% block content %}
 
