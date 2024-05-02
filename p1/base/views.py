@@ -79,7 +79,15 @@ def registerPage(request):
 def home(request):
     query = request.GET.get('query')
     rooms=Room.objects.filter()
+    allMessages=Message.objects.all().order_by('-created')[:5]
+
     if query:
+        allMessages=Message.objects.filter(
+            Q(room__topic__name__icontains=query) |
+            Q(room__name__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(body__icontains=query)).order_by('-created')[:5]
+        
         rooms=Room.objects.filter(
             Q(topic__name__icontains=query) |
             Q(name__icontains=query) |
@@ -87,7 +95,7 @@ def home(request):
             Q(description__icontains=query))
         
     topics=Topic.objects.all()
-    context={'rooms':rooms, 'rooms_count':rooms.count(), 'topics':topics}
+    context={'rooms':rooms, 'rooms_count':rooms.count(), 'topics':topics, 'allMessages':allMessages}
     return render(request, 'base/home.html', context)
 
 # Getting pk from the url call, sending curRoom as context to the html file room.html
