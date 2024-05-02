@@ -116,6 +116,7 @@ def room(request, pk):
     
     return render(request, 'base/room.html', context)
 
+
 @login_required(login_url='login_name')
 def createRoom(request):
     curForm=RoomForm()
@@ -159,6 +160,18 @@ def deleteRoom(request, pk):
     context={'obj':roomToDelete}
     return render(request, 'base/delete.html', context)
     #return redirect('delete-room_name')
+
+
+
+def userProfile(request, pk):
+    curUser=User.objects.get(username=pk)
+    curUser_messages=curUser.message_set.all().order_by('-created')
+    curUser_rooms=curUser.room_set.all()
+    topics=Topic.objects.filter()
+    context={'allMessages':curUser_messages, 'rooms':curUser_rooms, 'topics':topics}
+    
+    return render(request, 'base/user_profile.html', context)
+
 
 @login_required(login_url='login_name')
 def deleteMessage(request, pk):
