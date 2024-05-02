@@ -170,7 +170,7 @@ def userProfile(request, pk):
     curUser_messages=curUser.message_set.all().order_by('-created')
     curUser_rooms=curUser.room_set.all()
     topics=Topic.objects.filter()
-    context={'allMessages':curUser_messages, 'rooms':curUser_rooms, 'topics':topics}
+    context={'allMessages':curUser_messages, 'rooms':curUser_rooms, 'topics':topics, 'rooms_count':Room.objects.filter().count()}
     
     return render(request, 'base/user_profile.html', context)
 
