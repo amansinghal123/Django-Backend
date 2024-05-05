@@ -71,7 +71,7 @@
                   <div class="avatar avatar--small">
                     <img src="https://randomuser.me/api/portraits/men/37.jpg" />
                   </div>
-                  <span>@{{user.username}}</span>
+                  <span>@{{room.host}}</span>
                 </a>
               </div>
               <div class="room__details">
@@ -149,7 +149,10 @@
               <input type="text" name="body" placeholder="Write Your Message Here..."/>
               </form>
             {% else %}
-              <a href="{% url 'login_name'  %}" class="participant">Login to Post a Message</a>
+            <div style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #f5f5f5;">
+              <p style="color: #333;">You must <a href="{% url 'login_name' %}" style="color: blue; text-decoration: none;">Log in</a> to Post a Message</p>
+            </div>
+            
             {% endif %}
           </div>
           
