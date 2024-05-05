@@ -78,6 +78,7 @@ def registerPage(request):
 # Create your views here.
 def home(request):
     query = request.GET.get('query')
+    all_rooms=Room.objects.filter()
     rooms=Room.objects.filter()
     allMessages=Message.objects.all().order_by('-created')[:5]
 
@@ -95,7 +96,7 @@ def home(request):
             Q(description__icontains=query))
         
     topics=Topic.objects.all()[:5]
-    context={'rooms':rooms, 'rooms_count':rooms.count(), 'topics':topics, 'allMessages':allMessages}
+    context={'rooms':rooms, 'rooms_count':all_rooms.count(), 'topics':topics, 'allMessages':allMessages}
     return render(request, 'base/home.html', context)
 
 # Getting pk from the url call, sending curRoom as context to the html file room.html
