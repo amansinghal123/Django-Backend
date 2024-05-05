@@ -6,11 +6,11 @@ from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+
 from django.db.models import Q
 from .models import Room, Topic, Message, User
 
-from .formModels import RoomForm, UserForm
+from .formModels import RoomForm, UserForm, MyUserCreationForm
 import time
 
 
@@ -35,15 +35,15 @@ def loginPage(request):
         return redirect('home_name')
     
     if request.method=='POST':
-        curUser = request.POST.get('username').lower()
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
         try:
-            curUser=User.objects.get(username=curUser)
+            curUser=User.objects.get(email=email)
         except:
             messages.error(request, "User doesn't exist")
 
-        curUser = authenticate(request, username=curUser, password=password)
+        curUser = authenticate(request, email=email, password=password)
 
         if curUser is not None:
             login(request, curUser)
@@ -56,13 +56,13 @@ def loginPage(request):
 
 def registerPage(request):
     
-    form=UserCreationForm()
+    form=MyUserCreationForm()
     pageType='register'
 
     context={'page': pageType, 'form': form}  
 
     if request.method=='POST':
-        form=UserCreationForm(request.POST)
+        form=MyUserCreationForm(request.POST)
 
         if form.is_valid():
             curUser = form.save(commit=False)
@@ -184,7 +184,7 @@ def updateUserProfile(request, pk):
     context={'curUser': curUser, 'form': form}  
 
     if request.method=='POST':
-        form=UserForm(request.POST, instance=curUser)
+        form=UserForm(request.POST, request.FILES, instance=curUser)
 
         if form.is_valid():
             form.save()
