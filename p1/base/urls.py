@@ -18,4 +18,5 @@ urlpatterns = [
     path('edit-message/<str:pk>', views.editMessage, name="edit-message_name"),
 
     path('user_profile/<str:pk>/', views.userProfile, name="userProfile_name"),
+    path('update_user_profile/<str:pk>/', views.updateUserProfile, name="updateUserProfile_name"),
 ]

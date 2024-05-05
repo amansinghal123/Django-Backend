@@ -17,9 +17,11 @@
           </div>
         </div>
         <div class="profile__info">
-          <h3>{{user.username}}</h3>
-          <p>@{{user.username}}</p>
-          <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
+          <h3>{{curUser.username}}</h3>
+          <p>@{{curUser.username}}</p>
+          {% if curUser == request.user %}
+          <a href="{% url 'updateUserProfile_name' user.username %}" class="btn btn--main btn--pill">Edit Profile</a>
+          {% endif %}
         </div>
         <div class="profile__about">
           <h3>About</h3>
@@ -32,7 +34,7 @@
 
       <div class="roomList__header">
         <div>
-          <h2>Game Rooms Hosted by {{user.username}}</a>
+          <h2>Game Rooms Hosted by {{curUser.username}}</a>
           </h2>
         </div>
       </div>

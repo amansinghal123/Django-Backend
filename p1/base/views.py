@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from .models import Room, Topic, Message
 
-from .formModels import RoomForm
+from .formModels import RoomForm, UserForm
 import time
 
 
@@ -170,10 +170,28 @@ def userProfile(request, pk):
     curUser_messages=curUser.message_set.all().order_by('-created')
     curUser_rooms=curUser.room_set.all()
     topics=Topic.objects.filter()
-    context={'allMessages':curUser_messages, 'rooms':curUser_rooms, 'topics':topics, 'rooms_count':Room.objects.filter().count()}
+    context={'curUser':curUser, 'allMessages':curUser_messages, 'rooms':curUser_rooms, 'topics':topics, 'rooms_count':Room.objects.filter().count()}
     
     return render(request, 'base/user_profile.html', context)
 
+
+@login_required(login_url='login_name')
+def updateUserProfile(request, pk):
+    curUser=request.user
+    form=UserForm(instance=curUser)
+
+    context={'curUser': curUser, 'form': form}  
+
+    if request.method=='POST':
+        form=UserForm(request.POST, instance=curUser)
+
+        if form.is_valid():
+            form.save()
+            return redirect('userProfile_name', pk=curUser.username)
+        else:
+            messages.error(request, "An Error during Registration")
+    
+    return render(request, 'base/update_user_profile.html', context)
 
 @login_required(login_url='login_name')
 def deleteMessage(request, pk):
