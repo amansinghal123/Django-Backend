@@ -15,7 +15,7 @@
               </path>
             </svg>
           </a>
-          <h3>Create/Update Game Room</h3>
+          <h3>Request for a Topic to Admin</h3>
         </div>
       </div>
       <div class="layout__body">
@@ -23,13 +23,10 @@
 
         <form class="form" method="POST" action="">
           {% csrf_token %}
-          {% for field in form %}
           <div class="form__group">
-            <label for="room_name">{{field.label}}</label>
+            <label for="room_name">xyz</label>
             <!-- <input id="room_name" name="room_name" type="text" placeholder="E.g. Soccer" /> -->
-            {{field}}
           </div>
-          {% endfor %}
 
           <div class="form__action">
             <a class="btn btn--dark" href="{% url 'home_name' %}">Cancel</a>

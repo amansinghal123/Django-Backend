@@ -22,4 +22,6 @@ urlpatterns = [
 
     path('topics/', views.topicsPage, name="topics_name"),
     path('activity/', views.activityPage, name="activity_name"),
+
+    path('request-topic/', views.requestTopic, name="requestTopic_name"),
 ]

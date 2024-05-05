@@ -254,3 +254,8 @@ def activityPage(request):
         
     context={'allMessages':allMessages}
     return render(request, 'base/activity.html', context)
+
+@login_required(login_url='login_name')
+def requestTopic(request):
+    context={}
+    return render(request, 'base/requestTopic.html', context)
