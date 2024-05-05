@@ -1,4 +1,3 @@
-Number of Participants in Rooms not showing correctly
-Host of a room unable to delete a message of some other user in that room
-adding a topic could be a request sent to admin (with some checks), the admin can approve
+Number of Participants in Rooms could be improved
+Adding a topic could be a request sent to admin (with some checks), the admin can approve
 Login to Post a Message (Frontend)

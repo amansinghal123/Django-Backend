@@ -94,7 +94,7 @@ def home(request):
             Q(host__username__icontains=query) |
             Q(description__icontains=query))
         
-    topics=Topic.objects.all()
+    topics=Topic.objects.all()[:5]
     context={'rooms':rooms, 'rooms_count':rooms.count(), 'topics':topics, 'allMessages':allMessages}
     return render(request, 'base/home.html', context)
 
@@ -224,3 +224,33 @@ def editMessage(request, pk):
     
     context={'message':messageToEdit}
     return render(request, 'base/editMessage.html', context)
+
+
+def topicsPage(request):
+    query = request.GET.get('query')
+    topics=Topic.objects.filter()
+    rooms=Room.objects.filter()
+
+    if query:
+        topics=Topic.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query))
+        
+    topics=Topic.objects.all()
+    context={'rooms_count':rooms.count(), 'topics':topics}
+
+    return render(request, 'base/topics.html', context)
+
+def activityPage(request):
+    query = request.GET.get('query')
+    allMessages=Message.objects.all().order_by('-created')[:5]
+
+    if query:
+        allMessages=Message.objects.filter(
+            Q(room__topic__name__icontains=query) |
+            Q(room__name__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(body__icontains=query)).order_by('-created')[:5]
+        
+    context={'allMessages':allMessages}
+    return render(request, 'base/activity.html', context)
