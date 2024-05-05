@@ -22,12 +22,12 @@
             <div class="layout__body">
                 <form class="form" action="" method="POST">
                     {% csrf_token %}
-                    <div class="form__group">
-                        {% for field in form %}
-                        <label for="">{{field.label}}</label>
-                        {{field}}
-                        {% endfor %}
-                    </div>
+                    {% for field in form %}
+                        <div class="form__group">
+                            <label for="">{{field.label}}</label>
+                            {{field}}
+                        </div>
+                    {% endfor %}
 
                     <div class="form__action">
                         <a class="btn btn--dark" href="{% url 'home_name' %}">Cancel</a>
