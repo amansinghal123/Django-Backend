@@ -80,7 +80,7 @@ def home(request):
     query = request.GET.get('query')
     all_rooms=Room.objects.filter()
     rooms=Room.objects.filter()
-    allMessages=Message.objects.all().order_by('-created')[:5]
+    allMessages=Message.objects.all().order_by('created')[:5]
 
     if query:
         allMessages=Message.objects.filter(
@@ -102,7 +102,7 @@ def home(request):
 # Getting pk from the url call, sending curRoom as context to the html file room.html
 def room(request, pk):
     curRoom=Room.objects.get(id=pk)
-    curRoom_messages=Message.objects.filter(room__id=pk).order_by('-created')
+    curRoom_messages=Message.objects.filter(room__id=pk).order_by('created')
     participants = curRoom.participants.all()
     context={'room':curRoom, 'userMessages':curRoom_messages, 'participants':participants}
     if request.method=='POST':
